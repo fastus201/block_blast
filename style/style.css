@@ -1,0 +1,432 @@
+
+:root{
+    --WIDTH_CELLS:0;
+    --HEIGHT_CELLS:0;
+    --CELL_SIZE:0;
+
+    --TOTAL_WIDTH: calc(var(--WIDTH_CELLS) * var(--CELL_SIZE) * 1px);
+    --TOTAL_HEIGHT:calc(var(--HEIGHT_CELLS) * var(--CELL_SIZE) * 1px);
+
+    --BORDER-SIZE: calc(var(--CELL_SIZE) / 6.25 * 1px);
+}
+
+body{
+    background: #242424;
+    color: #ffffff;
+    overflow: hidden;
+  font-family: 'Arial', sans-serif;
+
+}
+#mainContainer{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%,-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#gameContainer{
+    width: var(--TOTAL_WIDTH);
+    height: var(--TOTAL_HEIGHT);
+
+    position: relative;
+
+    background:  hsl(220, 30%, 20%);
+    border: var(--BORDER-SIZE) solid #2b3b5c; 
+    border-radius: var(--BORDER-SIZE);
+    z-index: 10;
+}
+
+/*Create grid*/
+#gameContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 2px, transparent 2px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 2px, transparent 2px);
+    background-size: calc(var(--CELL_SIZE) * 1px) calc(var(--CELL_SIZE) * 1px); 
+}
+
+.cell {
+  box-sizing: border-box;
+
+  position: absolute;
+  --SIZE_MODIFIER:1;
+  width: calc(var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px); 
+  height: calc(var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px);
+
+  left: calc(var(--x) * var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px); 
+  top: calc(var(--y) * var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px); 
+
+  background: var(--base-color);
+
+  border: calc(var(--CELL_SIZE) / 25 * 1px) solid hsl(calc(var(--base-color-hue) + 10), 80%, 40%);
+  
+  box-shadow: 
+    inset 0 calc(var(--CELL_SIZE) / 50 * 1px) calc(var(--CELL_SIZE) / 25 * 1px) rgba(0, 0, 0, 0.4), 
+    inset 0 calc(var(--CELL_SIZE) / 25 * -1px) calc(var(--CELL_SIZE) / 25 * 1px) rgba(255, 255, 255, 0.2); 
+  
+  border-radius: calc(var(--CELL_SIZE) / 8.33 * 1px); 
+  
+  z-index: 1; 
+
+}
+
+
+/*Particles used for explosion*/
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: var(--base-color);
+  border-radius: 50%;
+  animation: explode 0.5s forwards;
+  
+}
+
+@keyframes explode {
+  0% {
+    opacity: 1;
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) translate(var(--x), var(--y)); 
+  }
+}
+
+
+#nextPiecesContainer{
+  position: relative;
+  width: var(--TOTAL_WIDTH);
+  height: calc(var(--MAX_PATTERN_SIZE) * var(--CELL_SIZE) * var(--DEFAULT_SIZE_MODIFIER) * 1px);
+  background-color: hsl(220, 30%, 18%);
+  border: var(--BORDER-SIZE) solid #2b3b5c;
+  border-radius: var(--BORDER-SIZE);
+}
+.hidden{
+  display: none;
+}
+
+
+.shadow{
+   position: absolute;
+  --SIZE_MODIFIER:1;
+  width: calc(var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px); 
+  height: calc(var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px);
+
+  left: calc(var(--x) * var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px); 
+  top: calc(var(--y) * var(--CELL_SIZE) * var(--SIZE_MODIFIER) * 1px); 
+  border-radius: calc(var(--CELL_SIZE) / 8.33 * 1px);
+  background-color: hsla(var(--base-color-hue), 80%, 30%, 0.8); 
+  border: calc(var(--CELL_SIZE) / 25 * 1px) dashed hsla(var(--base-color-hue), 80%, 40%, 0.9); 
+  box-shadow: 0 0 calc(var(--CELL_SIZE) / 3.3333 * 1px) calc(var(--CELL_SIZE) / 10 * 1px) hsla(var(--base-color-hue), 80%, 20%, 0.5); 
+}
+
+/*
+.shadow.completed-line{
+  box-shadow: none;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);  
+}
+  */
+
+
+.cell.moving{
+  z-index: 1000;
+  background-color: var(--base-color);  
+  filter: brightness(1.4);  
+  box-shadow: 0 calc(var(--CELL_SIZE) / 12.5 * 1px) calc(var(--CELL_SIZE) / 2.5 * 1px) calc(var(--CELL_SIZE) / 12.5 * 1px) hsla(var(--base-color-hue), 80%, 30%, 0.7);  
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.05) translateY(calc(var(--CELL_SIZE) / 10 * -1px)); 
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.cell.shrink{
+  --SIZE_MODIFIER:inherit;
+  cursor: pointer;
+
+}
+
+.completed-line {
+  border: calc(var(--CELL_SIZE) / 16.66666 * 1px) solid #FFF;  
+  box-shadow: 0 0 calc(var(--CELL_SIZE) / 5 * 1px) rgba(255, 255, 255, 0.6); 
+  animation: border-move 0.5s linear infinite;  
+  z-index: 100;
+}
+
+@keyframes border-move {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 calc(var(--CELL_SIZE) / 5 * 1px) rgba(255, 255, 255, 0.6);
+  }
+  50% {
+    transform: scale(1.1);  
+    box-shadow: 0 0 calc(var(--CELL_SIZE) / 3.333333 * 1px) rgba(255, 255, 255, 0.8);  
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 calc(var(--CELL_SIZE) / 5 * 1px) rgba(255, 255, 255, 0.6);
+  }
+}
+
+
+.piece-dropped {
+  animation: dropLanding 0.2s ease-out forwards; 
+}
+
+@keyframes dropLanding {
+  0% {
+    transform: translate(calc(var(--CELL_SIZE) / 12.5 * 1px), calc(var(--CELL_SIZE) / 12.5 * 1px)) scale(1.1); 
+    box-shadow: 0 calc(var(--CELL_SIZE) / 6.25 * 1px) calc(var(--CELL_SIZE) / 3.3333 * 1px) rgba(0, 0, 0, 0.4); 
+  }
+  50% {
+    transform: translate(0, 0) scale(0.96);
+    box-shadow: 0 calc(var(--CELL_SIZE) / 12.5 * 1px) calc(var(--CELL_SIZE) / 5 * 1px) rgba(0, 0, 0, 0.3); 
+  }
+  100% {
+    transform: translate(0, 0) scale(1); 
+    box-shadow: none; 
+  }
+}
+
+
+/*Score and best score*/
+
+#scoreContainer {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: var(--TOTAL_WIDTH) + var(--CELL_SIZE) * 0.2 * 1px; 
+  padding: calc(var(--CELL_SIZE) * 0.2 * 1px); 
+  background: hsl(220, 30%, 18%); 
+  border: calc(var(--CELL_SIZE) / 6.25 * 1px) solid #2b3b5c; 
+  border-radius: calc(var(--CELL_SIZE) / 6.25 * 1px); 
+  box-shadow: 0 calc(var(--CELL_SIZE) / 12.5 * 1px) calc(var(--CELL_SIZE) / 5 * 1px) rgba(0, 0, 0, 0.5); 
+  font-family: 'Arial', sans-serif;
+  color: #ffffff;
+  text-align: center;
+}
+
+#scoreContainer div {
+  display: flex;
+  flex-direction: column;
+}
+
+#scoreContainer div span.label {
+  font-size: calc(var(--CELL_SIZE) * 0.3px); 
+  color: hsl(220, 30%, 70%); 
+}
+
+#scoreContainer div span.value {
+  font-size: calc(var(--CELL_SIZE) * 0.5px); 
+  font-weight: bold;
+  color: hsl(45, 100%, 55%); 
+}
+
+#scoreContainer div.best span.value {
+  color: hsl(140, 80%, 40%); 
+}
+
+
+.replay{
+  background-color: #2B3B5C;
+  border-radius: calc(var(--CELL_SIZE) / 8 * 1px);
+  
+  min-width: calc(var(--CELL_SIZE) * 1px) !important;
+  height: calc(var(--CELL_SIZE) * 1px) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+
+
+  --display1:none;
+  cursor: pointer;
+
+
+}
+.replay svg{
+  position: relative;
+  fill: hsl(220, 30%, 70%);
+  width: 80%;
+  height: 80%;
+  margin-top: 3px;
+  transition: .35s ease-in-out;
+}
+
+.replay::after{
+  content:"Restart!";
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  top: calc(var(--CELL_SIZE) * -0.85px);
+
+  background-color: #161c29;
+  border-radius: 8px;
+  padding: calc(var(--CELL_SIZE) / 5 * 1px);
+  display: var(--display1);
+  font-size: calc(var(--CELL_SIZE) * 0.35px);
+  opacity: 1;
+}
+
+.replay:hover {
+  --display1:block;
+
+}
+.replay:hover svg{
+  rotate: 300deg;
+}
+
+.replay:active{
+  box-shadow: 0 calc(var(--CELL_SIZE) / 6.5 * 1px) calc(var(--CELL_SIZE) / 5 * 1px) rgba(0, 0, 0, 0.5); 
+}
+@keyframes rotateArrow {
+   0% {
+    rotate: 0deg;
+  }
+  85% {
+    rotate: 250deg;
+  }
+  100% {
+    rotate: 300deg;
+  }
+}
+
+
+
+
+@keyframes score-increase {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+    color: hsl(45, 100%, 60%); 
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.score-increased {
+  animation: score-increase 0.2s ease-out;
+}
+
+
+
+.combo-message {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: calc(var(--CELL_SIZE) * 0.7px);
+  font-weight: bolder;
+  color: hsl(320, 75%, 60%); 
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7); 
+  opacity: 1; 
+  pointer-events: none; 
+  user-select: none;
+  animation: comboBounceRotate 1.5s ease-out forwards;
+
+  z-index: 100000;
+}
+
+
+@keyframes comboBounceRotate {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) rotate(15deg) scale(0.8) translate(-50%, -50%); 
+    color: hsl(0, 0%, 85%); 
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-10px) rotate(-10deg) scale(1.1) translate(-50%, -50%); 
+    color: hsl(0, 0%, 100%); 
+  }
+  60% {
+    transform: translateY(5px) rotate(5deg) scale(1) translate(-50%, -50%); 
+    color: hsl(0, 0%, 90%); 
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(0) rotate(0) scale(1.2) translate(-50%, -50%); 
+    color: hsl(0, 0%, 75%); 
+  }
+}
+
+
+/* End game screen */
+#gameOverScreen {
+  box-sizing: border-box;
+  padding: 20px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 30, 30, 0.9); 
+  border-radius: calc(var(--CELL_SIZE) / 3.3333 * 1px);
+  text-align: center;
+  z-index: 1001;
+  color: #fff;
+  display: none; 
+  animation: dropIn 0.5s ease-out forwards; 
+  user-select: none;
+}
+
+#gameOverScreen h1 {
+  font-size: calc(var(--CELL_SIZE) * 0.7px);
+  margin-bottom: calc(var(--CELL_SIZE) / 2.5 * 1px);
+  color: hsl(45, 100%, 55%); 
+}
+
+#gameOverScreen p {
+  font-size: calc(var(--CELL_SIZE) * 0.5px);
+  margin-bottom: calc(var(--CELL_SIZE) / 2.5 * 1px);
+  color: hsl(220, 30%, 80%); 
+}
+
+#gameOverScreen button {
+  background-color: hsl(220, 30%, 40%); 
+  color: #fff;
+  border: none;
+  padding: calc(var(--CELL_SIZE) / 5 * 1px) calc(var(--CELL_SIZE) / 2.5 * 1px);
+  font-size: calc(var(--CELL_SIZE) * 0.5px);
+  border-radius: calc(var(--CELL_SIZE) / 10 * 1px);;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#gameOverScreen button:hover {
+  background-color: hsl(220, 30%, 50%); 
+}
+
+@keyframes dropIn {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  100% {
+    top: 20%;
+    opacity: 1;
+  }
+}

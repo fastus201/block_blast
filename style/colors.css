@@ -1,0 +1,35 @@
+/*Different colors used:*/
+
+[data-color="red"] {
+  --base-color: hsl(0, 85%, 45%);
+  --base-color-hue: 0;
+}
+
+[data-color="green"] {
+  --base-color: hsl(140, 80%, 40%);
+  --base-color-hue: 140;
+}
+
+[data-color="yellow"] {
+  --base-color: hsl(45, 100%, 55%); /* Giallo più brillante */
+  --base-color-hue: 45;
+}
+
+[data-color="purple"] {
+  --base-color: hsl(270, 75%, 50%);
+  --base-color-hue: 270;
+}
+
+[data-color="orange"] {
+  --base-color: hsl(30, 100%, 50%); /* Arancione più ricco e profondo */
+  --base-color-hue: 30;
+}
+
+[data-color="blue"] {
+  --base-color: hsl(190, 80%, 45%);
+  --base-color-hue: 190;
+}
+[data-color="gray"] {
+  --base-color: hsl(0, 0%, 50%); /* Grigio neutro */
+  --base-color-hue: 192;
+}

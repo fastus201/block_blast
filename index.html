@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block blast!</title>
+
+    <link rel="stylesheet" href="/style/colors.css">
+    <link rel="stylesheet" href="/style/style.css">
+
+    <script src="index.js" type="module"></script>
+</head>
+<body>
+
+    <div id="mainContainer">
+        <div id="scoreContainer">
+
+            <div class="current">
+                <span class="label">Score</span>
+                <span class="value" id="currentScore">0</span>
+            </div>
+            <div class="replay" id="restartGame">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="hsl(220, %, 70%)" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                </svg>
+            </div>
+            <div class="best">
+                <span class="label">Best</span>
+                <span class="value" id="bestScore">0</span>
+            </div>
+        </div>
+        <div id="gameContainer">
+            <div class="combo-message"></div>
+        </div>
+        <div id="gameOverScreen">
+            <h1>Game Over</h1>
+            <p>Your Score: <span id="finalScore">0</span></p>
+            <button id="restartButton">Restart</button>
+        </div>
+        <div id="nextPiecesContainer"></div>
+    </div>
+    
+</body>
+</html>

@@ -41,7 +41,7 @@ export class Settings{
     /**
      * Size of all pattern matrix.
      */
-    static MAX_PATTERN_SIZE = 4;
+    static MAX_PATTERN_SIZE = 5;
 
     
     /**

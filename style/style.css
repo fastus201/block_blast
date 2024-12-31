@@ -10,8 +10,6 @@
     --BORDER-SIZE: calc(var(--CELL_SIZE) / 6.25 * 1px);
 }
 
-*{
-}
 html{
   overflow: hidden;
 }
@@ -284,7 +282,7 @@ body{
   position: absolute;
   left: 50%;
   transform: translate(-50%);
-  top: calc(var(--CELL_SIZE) * -0.85px);
+  top: calc(var(--CELL_SIZE) * 1px);
 
   background-color: #161c29;
   border-radius: 8px;

@@ -276,6 +276,7 @@ export class Game{
 
         //I've just add a piece to the board, let's check the combo
         this.#checkForCombo(res);
+        
         this.#deleteFilledLines(res);
         
         
@@ -424,6 +425,7 @@ export class Game{
      */
     #deleteFilledLines(array,animation = true){
         
+        
         for(let line of array){
             if(line.type == "row"){
                 let i = 0;
@@ -431,15 +433,19 @@ export class Game{
                 for(let j = 0;j < Settings.WIDTH_CELLS;++j){
                     if(animation){
                         document.getElementById("piece"+j+"."+line.line).classList.add("completed-line");
-                        this.#updateScore(Settings.SCORE_INCREASE,false);
+                        this.#updateScore(Settings.SCORE_INCREASE,false,this.#comboCounter);
                     }
                     this.board[line.line][j] = 0;
                 }
+                
+                let comboValue = this.#comboCounter;
                 //Then I start the destruction animation
                 setTimeout(() => {
+                    
                     let int = setInterval(() => {
+                        
                         if(animation)
-                            this.#updateScore(Settings.SCORE_INCREASE,true);
+                            this.#updateScore(Settings.SCORE_INCREASE,true,comboValue);
                         
                         //Remove all pieces in a row
                         Square.destroyPiece(i,line.line);
@@ -456,15 +462,16 @@ export class Game{
                     for(let j = 0;j < Settings.HEIGHT_CELLS;++j){
                         if(animation){
                             document.getElementById("piece"+line.line+"."+j).classList.add("completed-line");
-                            this.#updateScore(Settings.SCORE_INCREASE,false);
+                            this.#updateScore(Settings.SCORE_INCREASE,false,this.#comboCounter);
                         }
                         this.board[j][line.line] = 0;
                     }
                 //Then I add the descrution animation
+                let comboValue = this.#comboCounter;
                 setTimeout(() => {
                     let int = setInterval(() => {
                         if(animation)
-                            this.#updateScore(Settings.SCORE_INCREASE,true);
+                            this.#updateScore(Settings.SCORE_INCREASE,true,comboValue);
                         //Remove all pieces in a random column
                         Square.destroyPiece(line.line,i);
                         if(++i == Settings.HEIGHT_CELLS)
@@ -475,6 +482,8 @@ export class Game{
 
             }
         }
+
+        
 
       
         
@@ -588,14 +597,16 @@ export class Game{
      * 
      * @param {Number} delta
      * @param {Boolean} graphic
+     * @param {Number} comboValue
      */
-    #updateScore(delta,graphic){
+    #updateScore(delta,graphic,comboValue){
+        
         //Increase the base value of delta considersing the combo counter
-        let increase = Math.pow(Settings.SCORE_EXPONENTIAL,this.#comboCounter);
+        let increase = Math.pow(Settings.SCORE_EXPONENTIAL,comboValue);
         
 
         if(graphic){
-            let score = parseInt(document.getElementById("currentScore").textContent);
+            let score = +document.getElementById("currentScore").textContent;
             let newGraphicScore = score + Math.round(delta*increase);
             let currentScore = document.getElementById('currentScore');
             currentScore.textContent = newGraphicScore;

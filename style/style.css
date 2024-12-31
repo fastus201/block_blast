@@ -10,12 +10,16 @@
     --BORDER-SIZE: calc(var(--CELL_SIZE) / 6.25 * 1px);
 }
 
+*{
+}
+html{
+  overflow: hidden;
+}
 body{
     background: #242424;
     color: #ffffff;
     overflow: hidden;
-  font-family: 'Arial', sans-serif;
-
+    font-family: 'Arial', sans-serif;
 }
 #mainContainer{
     position: absolute;
@@ -26,6 +30,7 @@ body{
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow: hidden;
 }
 
 #gameContainer{
@@ -165,7 +170,7 @@ body{
 .completed-line {
   border: calc(var(--CELL_SIZE) / 16.66666 * 1px) solid #FFF;  
   box-shadow: 0 0 calc(var(--CELL_SIZE) / 5 * 1px) rgba(255, 255, 255, 0.6); 
-  animation: border-move 0.5s linear infinite;  
+  /*animation: border-move 0.5s linear infinite;*/  
   z-index: 100;
 }
 

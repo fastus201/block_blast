@@ -61,7 +61,7 @@ export class Settings{
     /**
      * Number of particles spawned when a square is destroyed.
      */
-    static PARTICLES = 5;
+    static PARTICLES = 2;
 
     /**
      * How much you get for each squared destroyed.

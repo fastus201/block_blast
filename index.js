@@ -24,8 +24,6 @@ function manageMeasures() {
     let probCellSizeWidth = (width/ Settings.WIDTH_CELLS);
 
 
-    console.log(width,height);
-    
     
     let smaller = Math.min(probCellSizeHeight,probCellSizeWidth);
 
